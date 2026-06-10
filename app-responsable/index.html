@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APP2 Responsable - Escaner QR</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="panel">
+      <div class="brand">
+        <img class="logo" src="../assets/logo-ispi-4019.jpg" alt="Logo ISPI 4019">
+        <div>
+          <h1>Registro de asistencia</h1>
+          <p>ISPI 4019 San Juan Bautista - APP2 Responsable</p>
+        </div>
+      </div>
+
+      <section class="form">
+        <label>
+          URL del servidor Apps Script
+          <input id="serverUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+        </label>
+        <label>
+          Clave de acceso
+          <input id="accessKey" type="password" placeholder="Clave configurada en Code.gs">
+        </label>
+        <label>
+          Responsable autorizado
+          <input id="responsable" autocomplete="username" placeholder="ID o correo. Ej: R001">
+        </label>
+        <button id="saveConfig" class="secondary" type="button">Guardar configuracion</button>
+      </section>
+
+      <section class="scanner">
+        <div id="reader"></div>
+        <div class="actions">
+          <button id="startBtn" class="primary" type="button">Escanear QR</button>
+          <button id="stopBtn" class="secondary" type="button" disabled>Detener</button>
+        </div>
+      </section>
+
+      <section class="manual">
+        <details>
+          <summary>Carga manual del QR</summary>
+          <textarea id="manualPayload" placeholder="Pegar contenido tecnico de APP1"></textarea>
+          <button id="manualBtn" class="secondary" type="button">Registrar manualmente</button>
+        </details>
+      </section>
+
+      <section id="status" class="status idle">Listo para escanear.</section>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

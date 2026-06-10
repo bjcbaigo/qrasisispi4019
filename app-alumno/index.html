@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APP1 Alumno - QR Pasantias</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="panel">
+      <div class="brand">
+        <img class="logo" src="../assets/logo-ispi-4019.jpg" alt="Logo ISPI 4019">
+        <div>
+          <h1>Asistencia de pasantias</h1>
+          <p>ISPI 4019 San Juan Bautista - APP1 Alumno</p>
+        </div>
+      </div>
+
+      <form id="studentForm" class="form">
+        <label>
+          DNI o legajo
+          <input id="dni" name="dni" inputmode="numeric" autocomplete="off" required minlength="4" placeholder="Ej: 12345">
+        </label>
+
+        <label>
+          Nombre y apellido
+          <input id="nombre" name="nombre" autocomplete="name" required minlength="3" placeholder="Ej: Perez, Juan">
+        </label>
+
+        <button class="primary" type="submit">GENERAR</button>
+      </form>
+
+      <section id="result" class="result" hidden>
+        <div id="qrcode" class="qrbox" aria-label="Codigo QR generado"></div>
+        <div class="student-card">
+          <strong id="studentName"></strong>
+          <span id="studentDni"></span>
+          <small id="issuedAt"></small>
+        </div>
+        <button id="downloadBtn" class="secondary" type="button">Descargar QR</button>
+        <details>
+          <summary>Ver contenido tecnico</summary>
+          <textarea id="payloadText" readonly></textarea>
+        </details>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
