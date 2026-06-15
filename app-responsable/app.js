@@ -9,11 +9,13 @@ const manualPayload = document.querySelector("#manualPayload");
 const manualBtn = document.querySelector("#manualBtn");
 const historyList = document.querySelector("#historyList");
 
+const DEFAULT_SERVER_URL = "https://script.google.com/macros/s/AKfycbyVSudEA1sC201TMlzMyHuSoUVcwrepc-PJGISSTQScd4o2lUHsK2UcubfGuWKh2Xi2Vg/exec";
+
 let scanner;
 let busy = false;
 
 function loadConfig() {
-  serverUrl.value = localStorage.getItem("asistencia.serverUrl") || "";
+  serverUrl.value = localStorage.getItem("asistencia.serverUrl") || DEFAULT_SERVER_URL;
   responsableToken.value = localStorage.getItem("asistencia.responsableToken") || "";
 }
 
@@ -26,7 +28,7 @@ function persistConfig() {
 function clearSavedConfig() {
   localStorage.removeItem("asistencia.serverUrl");
   localStorage.removeItem("asistencia.responsableToken");
-  serverUrl.value = "";
+  serverUrl.value = DEFAULT_SERVER_URL;
   responsableToken.value = "";
   setStatus("Configuracion borrada.", "warn");
 }

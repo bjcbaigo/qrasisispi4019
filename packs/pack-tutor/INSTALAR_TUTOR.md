@@ -26,7 +26,7 @@ https://bjcbaigo.github.io/qrasisispi4019/app-responsable/
 
 ## Primer uso
 
-1. Ingresar la URL del servidor Apps Script.
+1. Verificar que la URL del servidor ya este cargada.
 2. Ingresar el token del tutor.
 3. Presionar `Guardar`.
 4. Presionar `Escanear QR`.
@@ -35,7 +35,7 @@ https://bjcbaigo.github.io/qrasisispi4019/app-responsable/
 ## Datos que debe entregar la institucion
 
 ```text
-URL servidor Apps Script:
+URL servidor Apps Script: https://script.google.com/macros/s/AKfycbyVSudEA1sC201TMlzMyHuSoUVcwrepc-PJGISSTQScd4o2lUHsK2UcubfGuWKh2Xi2Vg/exec
 Token del tutor:
 Lugar asignado:
 ```

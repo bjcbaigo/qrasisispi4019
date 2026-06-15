@@ -25,7 +25,7 @@ https://bjcbaigo.github.io/qrasisispi4019/app-responsable/
 3. Cada tutor recibe un token individual guardado en `Responsables!TOKEN_APP`.
 4. El alumno instala APP Alumno y carga su token.
 5. APP Alumno muestra una credencial QR.
-6. El tutor instala APP Tutor y carga la URL del servidor Apps Script y su token.
+6. El tutor instala APP Tutor, verifica la URL del servidor precargada y carga su token.
 7. El tutor escanea el QR del alumno.
 8. El servidor valida alumno, tutor, lugar y duplicados.
 9. La asistencia se registra en la hoja `Asistencias`.

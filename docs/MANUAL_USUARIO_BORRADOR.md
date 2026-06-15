@@ -13,7 +13,7 @@
 
 1. Abrir la URL de APP Tutor.
 2. Agregar la app a la pantalla principal.
-3. Ingresar la URL del servidor Apps Script.
+3. Verificar que la URL del servidor Apps Script ya este precargada.
 4. Ingresar el token de tutor entregado por la institucion.
 5. Presionar `Guardar`.
 6. Presionar `Escanear QR`.

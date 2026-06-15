@@ -30,6 +30,24 @@ R001           | Responsable XX | resp@local.com | L001     | Empresa XX | Activ
 
 El tutor cargara ese token en APP Tutor.
 
+### Si Google Sheets muestra "No valido" en TOKEN_APP
+
+Puede ocurrir si la columna `TOKEN_APP` hereda una validacion de datos de otra columna, por ejemplo una lista desplegable pensada para `Rol`, `Estado` u otra columna.
+
+Solucion:
+
+1. Seleccionar toda la columna `TOKEN_APP`.
+2. Ir a `Datos > Validacion de datos`.
+3. Eliminar la regla aplicada a esa columna, o cambiarla a texto libre.
+4. Verificar que `TOKEN_APP` no tenga lista desplegable.
+5. Cargar nuevamente el token, por ejemplo:
+
+```text
+RES-R001-2026-X9K2
+```
+
+La columna `TOKEN_APP` debe aceptar texto libre. No debe usar la lista de roles ni estados.
+
 ## Reglas recomendadas
 
 - Un token por alumno.
