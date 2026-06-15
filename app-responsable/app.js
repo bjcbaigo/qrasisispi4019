@@ -1,27 +1,34 @@
 const serverUrl = document.querySelector("#serverUrl");
-const accessKey = document.querySelector("#accessKey");
-const responsable = document.querySelector("#responsable");
+const responsableToken = document.querySelector("#responsableToken");
 const saveConfig = document.querySelector("#saveConfig");
+const clearConfig = document.querySelector("#clearConfig");
 const startBtn = document.querySelector("#startBtn");
 const stopBtn = document.querySelector("#stopBtn");
 const statusBox = document.querySelector("#status");
 const manualPayload = document.querySelector("#manualPayload");
 const manualBtn = document.querySelector("#manualBtn");
+const historyList = document.querySelector("#historyList");
 
 let scanner;
 let busy = false;
 
 function loadConfig() {
   serverUrl.value = localStorage.getItem("asistencia.serverUrl") || "";
-  accessKey.value = localStorage.getItem("asistencia.accessKey") || "";
-  responsable.value = localStorage.getItem("asistencia.responsable") || "";
+  responsableToken.value = localStorage.getItem("asistencia.responsableToken") || "";
 }
 
 function persistConfig() {
   localStorage.setItem("asistencia.serverUrl", serverUrl.value.trim());
-  localStorage.setItem("asistencia.accessKey", accessKey.value.trim());
-  localStorage.setItem("asistencia.responsable", responsable.value.trim());
+  localStorage.setItem("asistencia.responsableToken", responsableToken.value.trim());
   setStatus("Configuracion guardada.", "ok");
+}
+
+function clearSavedConfig() {
+  localStorage.removeItem("asistencia.serverUrl");
+  localStorage.removeItem("asistencia.responsableToken");
+  serverUrl.value = "";
+  responsableToken.value = "";
+  setStatus("Configuracion borrada.", "warn");
 }
 
 function setStatus(message, kind = "idle") {
@@ -30,11 +37,21 @@ function setStatus(message, kind = "idle") {
 }
 
 function requireConfig() {
-  if (!serverUrl.value.trim() || !accessKey.value.trim() || !responsable.value.trim()) {
-    setStatus("Completar URL del servidor, clave y responsable antes de escanear.", "bad");
+  if (!serverUrl.value.trim() || !responsableToken.value.trim()) {
+    setStatus("Completar URL del servidor y token del tutor antes de escanear.", "bad");
     return false;
   }
   return true;
+}
+
+function addHistory(message, kind) {
+  const item = document.createElement("li");
+  item.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+  item.className = kind;
+  historyList.prepend(item);
+  while (historyList.children.length > 8) {
+    historyList.lastElementChild.remove();
+  }
 }
 
 function jsonp(url) {
@@ -75,8 +92,7 @@ async function registerPayload(rawPayload) {
 
   const params = new URLSearchParams({
     action: "registrar",
-    key: accessKey.value.trim(),
-    responsable: responsable.value.trim(),
+    responsableToken: responsableToken.value.trim(),
     payload: rawPayload
   });
 
@@ -84,12 +100,16 @@ async function registerPayload(rawPayload) {
     const response = await jsonp(`${serverUrl.value.trim()}?${params.toString()}`);
     if (response.ok) {
       const duplicateText = response.duplicado ? " Registro marcado como duplicado." : "";
+      const message = `${response.alumno} - ${response.lugar}${response.duplicado ? " - duplicado" : ""}`;
       setStatus(`Asistencia registrada: ${response.alumno} - ${response.lugar}.${duplicateText}`, response.duplicado ? "warn" : "ok");
+      addHistory(message, response.duplicado ? "warn" : "ok");
     } else {
       setStatus(response.error || "No se pudo registrar la asistencia.", "bad");
+      addHistory(response.error || "Registro rechazado", "bad");
     }
   } catch (error) {
     setStatus(error.message, "bad");
+    addHistory(error.message, "bad");
   } finally {
     busy = false;
   }
@@ -132,8 +152,12 @@ async function stopScanner() {
 }
 
 saveConfig.addEventListener("click", persistConfig);
+clearConfig.addEventListener("click", clearSavedConfig);
 startBtn.addEventListener("click", startScanner);
 stopBtn.addEventListener("click", stopScanner);
 manualBtn.addEventListener("click", () => registerPayload(manualPayload.value.trim()));
 
 loadConfig();
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js");
+}

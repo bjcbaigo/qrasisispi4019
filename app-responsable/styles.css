@@ -48,8 +48,8 @@ body {
 }
 
 .logo {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   border-radius: 8px;
   object-fit: cover;
   border: 1px solid var(--line);
@@ -119,6 +119,11 @@ button:disabled {
   color: #fff;
 }
 
+.ghost {
+  background: #e8edf3;
+  color: #243246;
+}
+
 #reader {
   width: 100%;
   min-height: 260px;
@@ -178,6 +183,26 @@ textarea {
   color: var(--bad);
   background: #fdecec;
   border-color: #f3bcbc;
+}
+
+.history {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+.history h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.history ol {
+  margin: 0;
+  padding-left: 22px;
+  color: var(--muted);
+}
+
+.history li {
+  margin: 6px 0;
 }
 
 @media (max-width: 460px) {

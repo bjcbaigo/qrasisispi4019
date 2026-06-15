@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>APP1 Alumno - QR Pasantias</title>
+  <meta name="theme-color" content="#106b5f">
+  <title>Credencial Alumno - QR Pasantias</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="../assets/logo-ispi-4019.jpg">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -12,33 +15,37 @@
       <div class="brand">
         <img class="logo" src="../assets/logo-ispi-4019.jpg" alt="Logo ISPI 4019">
         <div>
-          <h1>Asistencia de pasantias</h1>
-          <p>ISPI 4019 San Juan Bautista - APP1 Alumno</p>
+          <h1>Credencial de pasantias</h1>
+          <p>ISPI 4019 San Juan Bautista</p>
         </div>
       </div>
 
       <form id="studentForm" class="form">
         <label>
-          DNI o legajo
-          <input id="dni" name="dni" inputmode="numeric" autocomplete="off" required minlength="4" placeholder="Ej: 12345">
+          Token institucional
+          <input id="token" name="token" autocomplete="off" required minlength="6" placeholder="Ej: ALU-A001-2026-X9K2">
         </label>
 
         <label>
-          Nombre y apellido
+          Nombre visible en esta credencial
           <input id="nombre" name="nombre" autocomplete="name" required minlength="3" placeholder="Ej: Perez, Juan">
         </label>
 
-        <button class="primary" type="submit">GENERAR</button>
+        <button class="primary" type="submit">GUARDAR Y MOSTRAR QR</button>
       </form>
 
       <section id="result" class="result" hidden>
-        <div id="qrcode" class="qrbox" aria-label="Codigo QR generado"></div>
-        <div class="student-card">
+        <div class="credential">
+          <img class="credential-logo" src="../assets/logo-ispi-4019.jpg" alt="">
           <strong id="studentName"></strong>
-          <span id="studentDni"></span>
+          <span>Credencial QR de pasantias</span>
+          <div id="qrcode" class="qrbox" aria-label="Codigo QR generado"></div>
           <small id="issuedAt"></small>
         </div>
-        <button id="downloadBtn" class="secondary" type="button">Descargar QR</button>
+        <div class="actions">
+          <button id="downloadBtn" class="secondary" type="button">Descargar QR</button>
+          <button id="resetBtn" class="ghost" type="button">Cambiar datos</button>
+        </div>
         <details>
           <summary>Ver contenido tecnico</summary>
           <textarea id="payloadText" readonly></textarea>

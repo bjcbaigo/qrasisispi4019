@@ -1,0 +1,23 @@
+{
+  "name": "ISPI 4019 Credencial Alumno",
+  "short_name": "Alumno ISPI",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef3f7",
+  "theme_color": "#106b5f",
+  "icons": [
+    {
+      "src": "../assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

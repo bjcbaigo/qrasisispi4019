@@ -7,7 +7,6 @@
   --page: #eef3f7;
   --accent: #106b5f;
   --accent-2: #e6f2ef;
-  --danger: #9b1c1c;
 }
 
 * {
@@ -46,8 +45,8 @@ body {
 }
 
 .logo {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   border-radius: 8px;
   object-fit: cover;
   border: 1px solid var(--line);
@@ -112,9 +111,43 @@ button {
   color: #fff;
 }
 
+.ghost {
+  background: #e8edf3;
+  color: #213044;
+}
+
 .result {
   display: grid;
   gap: 16px;
+}
+
+.credential {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.credential-logo {
+  width: 74px;
+  height: 74px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.credential strong {
+  font-size: 22px;
+}
+
+.credential span,
+.credential small {
+  color: var(--muted);
 }
 
 .qrbox {
@@ -135,18 +168,10 @@ button {
   height: auto;
 }
 
-.student-card {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 14px;
+.actions {
   display: grid;
-  gap: 4px;
-  background: #f8fafc;
-}
-
-.student-card span,
-.student-card small {
-  color: var(--muted);
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 summary {
@@ -161,4 +186,10 @@ textarea {
   resize: vertical;
   font-family: Consolas, monospace;
   font-size: 13px;
+}
+
+@media (max-width: 460px) {
+  .actions {
+    grid-template-columns: 1fr;
+  }
 }

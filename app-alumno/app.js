@@ -3,6 +3,7 @@ const result = document.querySelector("#result");
 const qrNode = document.querySelector("#qrcode");
 const payloadText = document.querySelector("#payloadText");
 const downloadBtn = document.querySelector("#downloadBtn");
+const resetBtn = document.querySelector("#resetBtn");
 
 let lastPayload = "";
 
@@ -10,19 +11,20 @@ function cleanText(value) {
   return value.trim().replace(/\s+/g, " ");
 }
 
-function cleanDni(value) {
-  return value.trim().replace(/[^\dA-Za-z-]/g, "");
+function cleanToken(value) {
+  return value.trim().replace(/[^A-Za-z0-9._-]/g, "").toUpperCase();
 }
 
-function randomNonce() {
-  const bytes = new Uint8Array(12);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+function saveCredential(token, nombre) {
+  localStorage.setItem("alumno.token", token);
+  localStorage.setItem("alumno.nombre", nombre);
 }
 
-async function sha256(text) {
-  const buffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buffer), (b) => b.toString(16).padStart(2, "0")).join("");
+function loadCredential() {
+  return {
+    token: localStorage.getItem("alumno.token") || "",
+    nombre: localStorage.getItem("alumno.nombre") || ""
+  };
 }
 
 function renderQr(payload) {
@@ -37,32 +39,32 @@ function renderQr(payload) {
   });
 }
 
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const dni = cleanDni(document.querySelector("#dni").value);
-  const nombre = cleanText(document.querySelector("#nombre").value);
+function showCredential(token, nombre) {
   const emitido = new Date().toISOString();
-  const nonce = randomNonce();
-  const token = (await sha256(`PASANTIA|${dni}|${nombre.toUpperCase()}|${nonce}`)).slice(0, 24).toUpperCase();
-
   const payload = {
-    schema: "asistencia-pasantias/v1",
-    dni,
-    nombre,
+    schema: "asistencia-pasantias/v2",
     token,
-    emitido,
-    nonce
+    emitido
   };
 
   lastPayload = JSON.stringify(payload);
   renderQr(lastPayload);
 
   document.querySelector("#studentName").textContent = nombre;
-  document.querySelector("#studentDni").textContent = `DNI/Legajo: ${dni}`;
   document.querySelector("#issuedAt").textContent = `Generado: ${new Date(emitido).toLocaleString()}`;
   payloadText.value = lastPayload;
+  form.hidden = true;
   result.hidden = false;
+}
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const token = cleanToken(document.querySelector("#token").value);
+  const nombre = cleanText(document.querySelector("#nombre").value);
+
+  saveCredential(token, nombre);
+  showCredential(token, nombre);
 });
 
 downloadBtn.addEventListener("click", () => {
@@ -72,4 +74,20 @@ downloadBtn.addEventListener("click", () => {
   link.download = "qr-asistencia-pasantias.png";
   link.href = canvas ? canvas.toDataURL("image/png") : image.src;
   link.click();
+});
+
+resetBtn.addEventListener("click", () => {
+  result.hidden = true;
+  form.hidden = false;
+  document.querySelector("#token").focus();
+});
+
+window.addEventListener("load", () => {
+  const saved = loadCredential();
+  if (saved.token) document.querySelector("#token").value = saved.token;
+  if (saved.nombre) document.querySelector("#nombre").value = saved.nombre;
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./service-worker.js");
+  }
 });

@@ -1,6 +1,6 @@
 const CONFIG = {
   SPREADSHEET_ID: "PEGAR_ID_DE_LA_PLANILLA",
-  ACCESS_KEY: "CAMBIAR_ESTA_CLAVE",
+  ACCESS_KEY: "CAMBIAR_ESTA_CLAVE_ADMIN",
   TIME_ZONE: "America/Argentina/Buenos_Aires",
   ALLOW_CROSS_LOCATION: false
 };
@@ -22,10 +22,8 @@ function doPost(e) {
 
 function handleRequest_(params) {
   try {
-    if (params.key !== CONFIG.ACCESS_KEY) {
-      return { ok: false, error: "Clave de acceso invalida." };
-    }
     if (params.action === "ping") {
+      if (params.key !== CONFIG.ACCESS_KEY) return { ok: false, error: "Clave de administracion invalida." };
       return { ok: true, message: "Servidor activo." };
     }
     if (params.action === "registrar") {
@@ -39,8 +37,9 @@ function handleRequest_(params) {
 
 function registrarAsistencia_(params) {
   const payload = parsePayload_(params.payload);
-  const responsableLogin = String(params.responsable || "").trim();
-  if (!responsableLogin) throw new Error("Falta responsable.");
+  const responsableToken = String(params.responsableToken || "").trim();
+  if (!responsableToken) throw new Error("Falta token del tutor.");
+  if (!payload.token) throw new Error("QR invalido: falta token de alumno.");
 
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
   const alumnos = readSheet_(ss, "Alumnos");
@@ -48,16 +47,16 @@ function registrarAsistencia_(params) {
   const asistenciasSheet = ss.getSheetByName("Asistencias");
   if (!asistenciasSheet) throw new Error("No existe la hoja Asistencias.");
 
-  const alumno = findAlumno_(alumnos, payload);
+  const alumno = findAlumnoByToken_(alumnos, payload.token);
   if (!alumno) throw new Error("QR invalido: alumno no encontrado o inactivo.");
 
-  const responsable = findResponsable_(responsables, responsableLogin);
-  if (!responsable) throw new Error("Responsable no autorizado o inactivo.");
+  const responsable = findResponsableByToken_(responsables, responsableToken);
+  if (!responsable) throw new Error("Tutor no autorizado o inactivo.");
 
   const alumnoLugarId = get_(alumno, "ID_LUGAR");
   const responsableLugarId = get_(responsable, "ID_LUGAR");
   if (!CONFIG.ALLOW_CROSS_LOCATION && alumnoLugarId && responsableLugarId && alumnoLugarId !== responsableLugarId) {
-    throw new Error("El alumno no corresponde al lugar asignado al responsable.");
+    throw new Error("El alumno no corresponde al lugar asignado al tutor.");
   }
 
   const now = new Date();
@@ -100,13 +99,11 @@ function parsePayload_(raw) {
   try {
     const parsed = JSON.parse(raw);
     return {
-      dni: String(parsed.dni || "").trim(),
-      nombre: String(parsed.nombre || "").trim(),
-      token: String(parsed.token || parsed.qrToken || "").trim(),
-      idAlumno: String(parsed.idAlumno || parsed.ID_ALUMNO || "").trim()
+      schema: String(parsed.schema || "").trim(),
+      token: String(parsed.token || parsed.qrToken || "").trim()
     };
   } catch (err) {
-    return { dni: String(raw).trim(), nombre: "", token: String(raw).trim(), idAlumno: "" };
+    return { schema: "legacy/raw-token", token: String(raw).trim() };
   }
 }
 
@@ -124,22 +121,19 @@ function readSheet_(ss, name) {
     });
 }
 
-function findAlumno_(rows, payload) {
+function findAlumnoByToken_(rows, token) {
+  const normalizedToken = normalize_(token);
   return rows.find((row) => {
     if (!isActive_(get_(row, "Estado"))) return false;
-    const sameId = payload.idAlumno && get_(row, "ID_ALUMNO") === payload.idAlumno;
-    const sameDni = payload.dni && normalize_(get_(row, "DNI/Legajo")) === normalize_(payload.dni);
-    const sameToken = payload.token && normalize_(get_(row, "QR/Token")) === normalize_(payload.token);
-    return sameId || sameDni || sameToken;
+    return normalize_(get_(row, "QR/Token")) === normalizedToken;
   });
 }
 
-function findResponsable_(rows, login) {
-  const normalizedLogin = normalize_(login);
+function findResponsableByToken_(rows, token) {
+  const normalizedToken = normalize_(token);
   return rows.find((row) => {
     if (!isActive_(get_(row, "Estado"))) return false;
-    return normalize_(get_(row, "ID_RESPONSABLE")) === normalizedLogin ||
-      normalize_(get_(row, "Correo/Login")) === normalizedLogin;
+    return normalize_(get_(row, "TOKEN_APP")) === normalizedToken;
   });
 }
 

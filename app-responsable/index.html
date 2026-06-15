@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>APP2 Responsable - Escaner QR</title>
+  <meta name="theme-color" content="#2457a6">
+  <title>APP Tutor - Escaner QR</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="../assets/logo-ispi-4019.jpg">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -13,24 +16,23 @@
         <img class="logo" src="../assets/logo-ispi-4019.jpg" alt="Logo ISPI 4019">
         <div>
           <h1>Registro de asistencia</h1>
-          <p>ISPI 4019 San Juan Bautista - APP2 Responsable</p>
+          <p>ISPI 4019 San Juan Bautista - Tutor</p>
         </div>
       </div>
 
-      <section class="form">
+      <section class="form config-card">
         <label>
           URL del servidor Apps Script
           <input id="serverUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec">
         </label>
         <label>
-          Clave de acceso
-          <input id="accessKey" type="password" placeholder="Clave configurada en Code.gs">
+          Token del tutor
+          <input id="responsableToken" type="password" autocomplete="current-password" placeholder="Token asignado por la institucion">
         </label>
-        <label>
-          Responsable autorizado
-          <input id="responsable" autocomplete="username" placeholder="ID o correo. Ej: R001">
-        </label>
-        <button id="saveConfig" class="secondary" type="button">Guardar configuracion</button>
+        <div class="actions">
+          <button id="saveConfig" class="secondary" type="button">Guardar</button>
+          <button id="clearConfig" class="ghost" type="button">Limpiar</button>
+        </div>
       </section>
 
       <section class="scanner">
@@ -44,12 +46,17 @@
       <section class="manual">
         <details>
           <summary>Carga manual del QR</summary>
-          <textarea id="manualPayload" placeholder="Pegar contenido tecnico de APP1"></textarea>
+          <textarea id="manualPayload" placeholder="Pegar contenido tecnico de APP Alumno"></textarea>
           <button id="manualBtn" class="secondary" type="button">Registrar manualmente</button>
         </details>
       </section>
 
       <section id="status" class="status idle">Listo para escanear.</section>
+
+      <section class="history">
+        <h2>Ultimos registros</h2>
+        <ol id="historyList"></ol>
+      </section>
     </section>
   </main>
 
